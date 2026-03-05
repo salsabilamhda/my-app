@@ -1,0 +1,64 @@
+.aboutContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 80vh;
+  padding: 40px 20px;
+  font-family: 'Inter', sans-serif;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 16px;
+}
+
+.description {
+  font-size: 1.1rem;
+  color: #666;
+  text-align: center;
+  line-height: 1.6;
+  max-width: 700px;
+  margin-bottom: 32px;
+}
+
+.infoCard {
+  background: #f8f9fa;
+  padding: 24px 40px;
+  border-radius: 12px;
+  border-left: 5px solid #000;
+  margin-bottom: 40px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+
+.infoItem {
+  margin: 8px 0;
+  font-size: 1rem;
+  color: #333;
+}
+
+.infoItem strong {
+  color: #000;
+  width: 140px;
+  display: inline-block;
+}
+
+.illustrationWrapper {
+  width: 100%;
+  max-width: 600px;
+  transition: transform 0.3s ease;
+}
+
+.illustrationWrapper:hover {
+  transform: translateY(-5px);
+}
+
+.image {
+  width: 100%;
+  height: auto;
+  display: block;
+}

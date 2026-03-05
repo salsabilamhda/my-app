@@ -3,11 +3,19 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 
 type Data = {
   name: string
+  alamat: string
 }
 
 export default function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Data>
+  res: NextApiResponse
 ) {
-  res.status(200).json({ name: 'John Doe' })
+  const data = {
+    name: 'Salsabila Mahda',
+    alamat: 'jl.suka suka no 1'
+  }
+
+  res.setHeader('Content-Type', 'application/json')
+  res.status(200).send(JSON.stringify(data, null, 2))
 }
+
