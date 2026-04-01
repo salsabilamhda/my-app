@@ -1,18 +1,14 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import withAuth from "./Middleware/withAuth"; 
 
-export function middleware(request: NextRequest) {
-  const isLogin = false;
-  if (isLogin) {
-    return NextResponse.next();
-  } else {
-    return NextResponse.redirect(new URL("/auth/login", request.url));
-  }
-
-  //return NextResponse.redirect(new URL("/", request.url));
-  //return NextResponse.next();
+export function mainMiddleware(request: NextRequest) {
+  return NextResponse.next();
 }
 
+// Hanya daftarkan halaman yang memang butuh proteksi
+export default withAuth(mainMiddleware, ["/profile", "/produk", "/about"]);
+
 export const config = {
-  matcher: ["/produk", "/about"],
+  matcher: ["/profile", "/produk", "/about"],
 };
