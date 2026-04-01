@@ -1,44 +1,62 @@
-import TampilanProduk from "@/views/produk/index";
+import fetcher from "@/utils/swr/fetcher";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import useSWR from "swr";
+import DetailProduk from "../../views/DetailProduct";
+import { ProductType } from "@/types/Product.type";
 
-const HalamanProduk = () => {
-  // 1. Inisialisasi State
-  const [isLogin, setIsLogin] = useState(true); 
-  const [products, setProducts] = useState([]);
-  const { push } = useRouter();
+const HalamanProduk = ({ product }: { product: ProductType }) => {
+  // Digunakan jika ingin menggunakan client-side rendering (SWR)
+  // const { query } = useRouter();
+  // const { data, error } = useSWR(query.id ? `/api/produk/${query.id}` : null, fetcher);
 
-  // 2. Proteksi Login (Redirect jika tidak login)
-  useEffect(() => {
-    if (!isLogin) {
-      push("/auth/login");
-    }
-  }, [isLogin, push]);
-
-  // 3. Mengambil Data dari API
-  useEffect(() => {
-    if (isLogin) {
-      fetch("/api/produk")
-        .then((response) => response.json())
-        .then((responsedata) => {
-          // Pastikan mengambil properti 'data' dari API
-          setProducts(responsedata.data || []);
-        })
-        .catch((error) => {
-          console.error("Error fetching produk:", error);
-        });
-    }
-  }, [isLogin]);
-
-  // Cegah render jika belum login
-  if (!isLogin) return null;
-
-  // 4. Kirim data 'products' ke komponen TampilanProduk
   return (
     <div>
-      <TampilanProduk products={products} />
+      <DetailProduk products={product} />
     </div>
   );
 };
 
 export default HalamanProduk;
+
+// --- STRATEGI STATIC SITE GENERATION (SSG) ---
+
+export async function getStaticPaths() {
+  const res = await fetch('http://localhost:3000/api/products');
+  const response = await res.json();
+
+  // Menggunakan 'id' sesuai dengan nama file [id].tsx
+  const paths = response.data.map((product: ProductType) => ({
+    params: { id: product.id.toString() } 
+  }));
+
+  return {
+    paths,
+    fallback: false // atau 'blocking' jika data bisa bertambah di runtime
+  };
+}
+
+export async function getStaticProps({ params }: { params: { id: string } }) {
+  const res = await fetch(`http://localhost:3000/api/produk/${params.id}`);
+  const response = await res.json();
+
+  return {
+    props: {
+      product: response.data,
+    },
+    // revalidate: 10, // opsional: update data setiap 10 detik tanpa build ulang
+  };
+}
+
+// --- ALTERNATIF: SERVER SIDE RENDERING (SSR) ---
+/*
+export async function getServerSideProps({ params }: { params: { id: string } }) {
+  const res = await fetch(`http://localhost:3000/api/produk/${params.id}`);
+  const response = await res.json();
+
+  return {
+    props: {
+      product: response.data,
+    },
+  };
+}
+*/

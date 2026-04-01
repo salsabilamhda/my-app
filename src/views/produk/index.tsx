@@ -1,4 +1,5 @@
-import styles from "@/pages/produk/product.module.scss";
+import styles from "../../pages/produk/product.module.scss";
+import Link from "next/link";
 
 type ProductType = {
   id: string;
@@ -8,58 +9,41 @@ type ProductType = {
   category: string;
 };
 
-const TampilanProduk = ({
-  products,
-  isLoading,
-}: {
-  products: ProductType[];
-  isLoading?: boolean;
-}) => {
+const TampilanProduk = ({ products }: { products: ProductType[] }) => {
   return (
     <div className={styles.produk}>
-      <h1 className={styles["produk__title"]}>Daftar Produk</h1>
-      <div className={styles["produk__content"]}>
-        {isLoading ? (
-          [...Array(4)].map((_, index) => (
-            <div key={index} className={styles["produk__content__skeleton"]}>
-              <div className={styles["produk__content__skeleton__image"]}></div>
-              <div className={styles["produk__content__skeleton__details"]}>
-                {/* Urutan Skeleton disesuaikan: Name > Category > Price */}
-                <div className={`${styles["produk__content__skeleton__line"]} ${styles["produk__content__skeleton__line--medium"]}`}></div>
-                <div className={`${styles["produk__content__skeleton__line"]} ${styles["produk__content__skeleton__line--short"]}`}></div>
-                <div className={`${styles["produk__content__skeleton__line"]} ${styles["produk__content__skeleton__line--long"]}`}></div>
-              </div>
-            </div>
-          ))
-        ) : products.length > 0 ? (
-          products.map((product: ProductType) => (
-            <div key={product.id} className={styles["produk__content__item"]}>
-              <div className={styles["produk__content__item__imageWrapper"]}>
-                <img src={product.image} alt={product.name} loading="lazy" />
-              </div>
-              
-              <div className={styles["produk__content__item__details"]}>
-                {/* 1. Name (Bold) */}
-                <h4 className={styles["produk__content__item__name"]}>
+      <h1 className={styles.produk__title}>Daftar Produk</h1>
+      <div className={styles.produk__content}>
+        {products.length > 0 ? (
+          <>
+            {products.map((product: ProductType) => (
+              <Link 
+                href={`/produk/${product.id}`} 
+                key={product.id} 
+                className={styles.produk__content__item}
+              >
+                <div className={styles.produk__content__item__image}>
+                  <img src={product.image} alt={product.name} width={200} />
+                </div>
+                <h4 className={styles.produk__content__item__name}>
                   {product.name}
                 </h4>
-                
-                {/* 2. Category (Biasa) */}
-                <p className={styles["produk__content__item__category"]}>
+                <p className={styles.produk__content__item__category}>
                   {product.category}
                 </p>
-                
-                {/* 3. Price */}
-                <p className={styles["produk__content__item__price"]}>
+                <p className={styles.produk__content__item__price}>
                   Rp {product.price.toLocaleString("id-ID")}
                 </p>
-              </div>
-            </div>
-          ))
+              </Link>
+            ))}
+          </>
         ) : (
-          <p style={{ gridColumn: "1 / -1", textAlign: "center", color: "#666" }}>
-            Belum ada produk yang tersedia saat ini.
-          </p>
+          <div className={styles.produk__content__skeleton}>
+            <div className={styles.produk__content__skeleton__image}></div>
+            <div className={styles.produk__content__skeleton__name}></div>
+            <div className={styles.produk__content__skeleton__category}></div>
+            <div className={styles.produk__content__skeleton__price}></div>
+          </div>
         )}
       </div>
     </div>

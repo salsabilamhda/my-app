@@ -1,14 +1,13 @@
-import TampilanProduk from "@/views/produk"; // Sesuaikan path jika berbeda
+import TampilanProduk from "@/views/produk"; 
 import useSWR from "swr";
-// Pastikan kamu sudah membuat file fetcher.ts sesuai dengan gambar yang kamu unggah di awal
-import fetcher from "../utils/swr/fetcher"; 
+// Pastikan path fetcher sudah benar
+import fetcher from "../../utils/swr/fetcher"; 
 
 const Kategori = () => {
-  // REFACTOR: Menghapus useState dan useEffect, diganti dengan 1 baris useSWR
-  // SWR otomatis menyediakan state 'data', 'error', dan 'isLoading'
-  const { data, error, isLoading } = useSWR("/api/produk", fetcher);
+  // Mengambil data dari API menggunakan SWR
+  const { data, error } = useSWR("/api/produk", fetcher);
 
-  // Menangani tampilan jika terjadi error pada API
+  // Menangani tampilan jika terjadi error
   if (error) {
     return (
       <div style={{ textAlign: "center", padding: "50px", color: "red" }}>
@@ -19,12 +18,12 @@ const Kategori = () => {
 
   return (
     <div>
-      {/* 1. Kirim 'isLoading' bawaan dari SWR untuk memicu animasi Skeleton.
-        2. Gunakan optional chaining (data?.data) agar tidak error saat data masih undefined/proses fetch.
-           Jika data?.data kosong/undefined, kirim array kosong [].
+      {/* Karena TampilanProduk yang kita buat sebelumnya mengecek 
+          'products.length > 0' untuk menampilkan data, 
+          kita cukup mengirimkan array kosong [] saat data belum ada (loading).
+          Ini akan otomatis memicu kondisi 'else' (skeleton) di TampilanProduk.
       */}
       <TampilanProduk 
-        isLoading={isLoading} 
         products={data?.data || []} 
       />
     </div>
