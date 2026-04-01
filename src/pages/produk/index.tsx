@@ -1,33 +1,25 @@
-import TampilanProduk from "@/views/produk"; 
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+import TampilanProduk from "../../views/produk";
 import useSWR from "swr";
-// Pastikan path fetcher sudah benar
-import fetcher from "../../utils/swr/fetcher"; 
+import fetcher from "../../utils/swr/fetcher";
 
-const Kategori = () => {
-  // Mengambil data dari API menggunakan SWR
-  const { data, error } = useSWR("/api/produk", fetcher);
+// const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
-  // Menangani tampilan jika terjadi error
-  if (error) {
-    return (
-      <div style={{ textAlign: "center", padding: "50px", color: "red" }}>
-        Terjadi kesalahan saat memuat data produk.
-      </div>
-    );
-  }
+const kategori = () => {
+  // const [isLogin, setIsLogin] = useState(true);
+  const { push } = useRouter();
+  const [products, setProducts] = useState([]);
+  // console.log("products:", products);
+
+  const { data, error, isLoading } = useSWR("/api/produk", fetcher);
+  // cek apakah data, error, dan isLoading sudah benar
 
   return (
     <div>
-      {/* Karena TampilanProduk yang kita buat sebelumnya mengecek 
-          'products.length > 0' untuk menampilkan data, 
-          kita cukup mengirimkan array kosong [] saat data belum ada (loading).
-          Ini akan otomatis memicu kondisi 'else' (skeleton) di TampilanProduk.
-      */}
-      <TampilanProduk 
-        products={data?.data || []} 
-      />
+      <TampilanProduk products={isLoading ? [] : data.data} />
     </div>
   );
 };
 
-export default Kategori;
+export default kategori;
