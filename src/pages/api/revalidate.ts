@@ -1,0 +1,38 @@
+// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
+import type { NextApiRequest, NextApiResponse } from "next";
+
+type Data = {
+  revalidated: boolean;
+  message?: string;
+};
+
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse<Data>,
+) {
+  // Mengecek apakah token di query sama dengan token di .env
+  if (req.query.token !== process.env.REVALIDATE_TOKEN) {
+    return res.status(401).json({
+      revalidated: false,
+      message: "Insert correct token",
+    });
+  }
+
+  // Mengecek apakah parameter data bernilai "produk"
+  if (req.query.data === "produk") {
+    try {
+      // Memicu pembaruan halaman /produk/static
+      await res.revalidate("/produk/static");
+      return res.status(200).json({ revalidated: true });
+    } catch (error) {
+      console.error("Error in API route:", error);
+      return res.status(500).send({ revalidated: false });
+    }
+  }
+
+  // Respon jika parameter data tidak valid
+  return res.json({
+    revalidated: false,
+    message: "Invalid query parameter. Expected 'data=produk'.",
+  });
+}
