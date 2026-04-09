@@ -1,3 +1,4 @@
+import Image from "next/image"; // Import komponen Image
 import styles from "./navbar.module.css";
 import { signIn, signOut, useSession } from "next-auth/react";
 
@@ -16,7 +17,9 @@ const Navbar = () => {
               
               {/* --- MODIFIKASI: Menampilkan foto profil Google --- */}
               {data.user?.image && (
-                <img
+                <Image
+                  width={32}
+                  height={32}
                   src={data.user.image}
                   alt={data.user.fullname}
                   className={styles.navbar__user__image}

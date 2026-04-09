@@ -78,13 +78,10 @@ export async function signUp(
 }
 
 // --- PENAMBAHAN FUNGSI signInWithGoogle (Gambar 2) ---
-export async function signInWithGoogle(userData: any, callback: any) {
+// Ganti nama signInWithGoogle menjadi loginWithOAuth agar reusable
+export async function loginWithOAuth(userData: any, callback: any) {
   try {
-    const q = query(
-      collection(db, "users"),
-      where("email", "==", userData.email)
-    );
-
+    const q = query(collection(db, "users"), where("email", "==", userData.email));
     const querySnapshot = await getDocs(q);
     const data: any = querySnapshot.docs.map((doc) => ({
       id: doc.id,
@@ -92,33 +89,20 @@ export async function signInWithGoogle(userData: any, callback: any) {
     }));
 
     if (data.length > 0) {
-      // USER SUDAH ADA: Kita tambahkan updatedAt untuk mencatat login terakhir
+      // User lama: update profil (termasuk avatar terbaru)
       userData.role = data[0].role;
-      userData.updatedAt = serverTimestamp(); // Tambahkan login terakhir
-      
+      userData.updatedAt = serverTimestamp();
       await updateDoc(doc(db, "users", data[0].id), userData);
-      callback({
-        status: true,
-        message: "User updated and logged in with Google",
-        data: userData,
-      });
+      callback({ status: true, data: userData });
     } else {
-      // USER BARU: Kita tambahkan createdAt seperti pada fungsi signUp
+      // User baru
       userData.role = "member";
-      userData.createdAt = serverTimestamp(); // Tambahkan tanggal buat akun
-      
+      userData.createdAt = serverTimestamp();
       await addDoc(collection(db, "users"), userData);
-      callback({
-        status: true,
-        message: "User registered and logged in with Google",
-        data: userData,
-      });
+      callback({ status: true, data: userData });
     }
   } catch (error: any) {
-    callback({
-      status: false,
-      message: "Failed to register user with Google",
-    });
+    callback({ status: false });
   }
 }
 

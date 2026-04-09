@@ -1,8 +1,9 @@
-import { signIn, signInWithGoogle } from "@/utils/db/servicefirebase"; // Pastikan signInWithGoogle diimport
 import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
+import GitHubProvider from "next-auth/providers/github";
 import bcrypt from "bcrypt";
+import { signIn, loginWithOAuth } from "@/utils/db/servicefirebase";
 
 export const authOptions: NextAuthOptions = {
   session: {
@@ -10,6 +11,7 @@ export const authOptions: NextAuthOptions = {
   },
   secret: process.env.NEXTAUTH_SECRET,
   providers: [
+    // 1. Provider Credentials (Email & Password)
     CredentialsProvider({
       name: "credentials",
       credentials: {
@@ -39,22 +41,29 @@ export const authOptions: NextAuthOptions = {
         return null;
       },
     }),
+    // 2. Provider Google
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID || "",
       clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
     }),
+    // 3. Provider GitHub
+    GitHubProvider({
+      clientId: process.env.GITHUB_ID || "",
+      clientSecret: process.env.GITHUB_SECRET || "",
+    }),
   ],
 
   callbacks: {
-    async jwt({ token, account, profile, user }: any) {
+    async jwt({ token, account, user }: any) {
+      // Logika untuk login manual (Credentials)
       if (account?.provider === "credentials" && user) {
         token.email = user.email;
         token.fullname = user.fullname;
         token.role = user.role;
       }
 
-      // --- MODIFIKASI SESUAI GAMBAR TERBARU ---
-      if (account?.provider === "google") {
+      // Logika Reusable untuk OAuth (Google & GitHub)
+      if (account?.provider === "google" || account?.provider === "github") {
         const data = {
           fullname: user.name,
           email: user.email,
@@ -62,37 +71,28 @@ export const authOptions: NextAuthOptions = {
           type: account.provider,
         };
 
-        // Memanggil service signInWithGoogle
-        await signInWithGoogle(data, (result: any) => {
-          // Pastikan mengecek result.status sesuai dengan object yang dikirim
+        // Memanggil service gabungan yang sudah direfaktor
+        await loginWithOAuth(data, (result: any) => {
           if (result.status) {
             token.fullname = result.data.fullname;
             token.email = result.data.email;
             token.image = result.data.image;
             token.type = result.data.type;
-            token.role = result.data.role;
+            token.role = result.data.role; // Role diambil dari Firestore
           }
         });
       }
-      // ---------------------------------------
 
       return token;
     },
 
     async session({ session, token }: any) {
-      if (token.email) {
+      // Memindahkan semua data dari token ke session agar bisa diakses di client
+      if (token) {
         session.user.email = token.email;
-      }
-      if (token.fullname) {
         session.user.fullname = token.fullname;
-      }
-      if (token.role) {
         session.user.role = token.role;
-      }
-      if (token.image) {
         session.user.image = token.image;
-      }
-      if (token.type) {
         session.user.type = token.type;
       }
 
