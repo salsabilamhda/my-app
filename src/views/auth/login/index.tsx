@@ -1,14 +1,14 @@
 import Link from "next/link";
-import style from "../../auth/login/login.module.scss"; // Sesuaikan path sesuai gambar
+import style from "../../auth/login/login.module.scss"; 
 import { useState } from "react";
 import { useRouter } from "next/router";
-import { signIn } from "next-auth/react"; // Penambahan import signIn
+import { signIn } from "next-auth/react"; 
 
 const Tampilanlogin = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const { push, query } = useRouter(); // Tambahkan query untuk callbackUrl
+  const { push, query } = useRouter(); 
 
-  const callbackUrl: any = query.callbackUrl || "/"; // Definisi callbackUrl sesuai gambar
+  const callbackUrl: any = query.callbackUrl || "/"; 
   const [error, setError] = useState("");
 
   const handleSubmit = async (event: any) => {
@@ -17,7 +17,6 @@ const Tampilanlogin = () => {
     setIsLoading(true);
 
     try {
-      // Menggunakan signIn dari next-auth sebagai pengganti fetch manual ke API login
       const res = await signIn("credentials", {
         redirect: false,
         email: event.target.email.value,
@@ -74,11 +73,24 @@ const Tampilanlogin = () => {
           >
             {isLoading ? "Loading..." : "login"}
           </button>
+
+          {/* --- MODIFIKASI SESUAI GAMBAR --- */}
+          <br /><br />
+          <button
+            type="button" // Gunakan type button agar tidak memicu handleSubmit form
+            onClick={() => signIn("google", { callbackUrl, redirect: false })}
+            className={style.login__form__item__button}
+            disabled={isLoading}
+          >
+            {isLoading ? "Loading..." : "sign in with google"}
+          </button>
+          {/* ------------------------------- */}
         </form>
 
         <br />
         <p className={style.login_form__item_text}>
-          tidak punya {""} akun? <Link href="/auth/register">Ke Halaman Register</Link>
+          tidak punya {""} akun? {" "}
+          <Link href="/auth/register">Ke Halaman Register</Link>
         </p>
       </div>
     </div>

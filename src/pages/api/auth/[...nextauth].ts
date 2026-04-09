@@ -1,6 +1,7 @@
-import { signIn } from "@/utils/db/servicefirebase";
+import { signIn, signInWithGoogle } from "@/utils/db/servicefirebase"; // Pastikan signInWithGoogle diimport
 import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import GoogleProvider from "next-auth/providers/google";
 import bcrypt from "bcrypt";
 
 export const authOptions: NextAuthOptions = {
@@ -38,9 +39,12 @@ export const authOptions: NextAuthOptions = {
         return null;
       },
     }),
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID || "",
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
+    }),
   ],
 
-  // --- MODIFIKASI CALLBACKS SESUAI GAMBAR ---
   callbacks: {
     async jwt({ token, account, profile, user }: any) {
       if (account?.provider === "credentials" && user) {
@@ -48,9 +52,33 @@ export const authOptions: NextAuthOptions = {
         token.fullname = user.fullname;
         token.role = user.role;
       }
-      // console.log("jwt callback", { token, account, profile, user })
+
+      // --- MODIFIKASI SESUAI GAMBAR TERBARU ---
+      if (account?.provider === "google") {
+        const data = {
+          fullname: user.name,
+          email: user.email,
+          image: user.image,
+          type: account.provider,
+        };
+
+        // Memanggil service signInWithGoogle
+        await signInWithGoogle(data, (result: any) => {
+          // Pastikan mengecek result.status sesuai dengan object yang dikirim
+          if (result.status) {
+            token.fullname = result.data.fullname;
+            token.email = result.data.email;
+            token.image = result.data.image;
+            token.type = result.data.type;
+            token.role = result.data.role;
+          }
+        });
+      }
+      // ---------------------------------------
+
       return token;
     },
+
     async session({ session, token }: any) {
       if (token.email) {
         session.user.email = token.email;
@@ -61,11 +89,16 @@ export const authOptions: NextAuthOptions = {
       if (token.role) {
         session.user.role = token.role;
       }
-      // console.log("session callback", { session, token })
+      if (token.image) {
+        session.user.image = token.image;
+      }
+      if (token.type) {
+        session.user.type = token.type;
+      }
+
       return session;
     },
   },
-  // ------------------------------------------
 
   pages: {
     signIn: "/auth/login",
