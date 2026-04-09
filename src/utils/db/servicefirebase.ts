@@ -7,12 +7,29 @@ import {
   query,
   addDoc,
   where,
-  serverTimestamp, // Gunakan serverTimestamp untuk createdAt yang akurat
+  serverTimestamp,
 } from "firebase/firestore";
 import app from "./firebase";
 import bcrypt from "bcrypt";
 
 const db = getFirestore(app);
+
+// --- FUNGSI TAMBAHAN SESUAI GAMBAR (Line 25-38) ---
+export async function signIn(email: string) {
+  const q = query(collection(db, "users"), where("email", "==", email));
+  const querySnapshot = await getDocs(q);
+  const data = querySnapshot.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data(),
+  }));
+
+  if (data) {
+    return data[0];
+  } else {
+    return null;
+  }
+}
+// --------------------------------------------------
 
 export async function signUp(
   userData: {
@@ -31,21 +48,15 @@ export async function signUp(
   const querySnapshot = await getDocs(q);
 
   if (!querySnapshot.empty) {
-    // Jika data ditemukan, berarti email sudah terdaftar
     callback({
       status: "error",
       message: "Email already exists",
     });
   } else {
-    // Email belum ada -> Proses pendaftaran
     try {
-      // 1. Enkripsi password (Tugas Poin 2)
       userData.password = await bcrypt.hash(userData.password, 10);
-      
-      // 2. Tambahkan Role default "member" (Tugas Poin 3)
       userData.role = "member";
       
-      // 3. Tambahkan field tambahan sesuai Struktur Database
       const dataToSave = {
         ...userData,
         createdAt: serverTimestamp(),
@@ -66,7 +77,6 @@ export async function signUp(
   }
 }
 
-// Fungsi pembantu lainnya tetap ada
 export async function retrieveProducts(collectionName: string) {
   const snapshot = await getDocs(collection(db, collectionName));
   return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));

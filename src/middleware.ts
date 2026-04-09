@@ -6,9 +6,20 @@ export function mainMiddleware(request: NextRequest) {
   return NextResponse.next();
 }
 
-// Hanya daftarkan halaman yang memang butuh proteksi
-export default withAuth(mainMiddleware, ["/profile", "/produk", "/about"]);
+// --- PERBAIKAN: Tambahkan "/admin" ke dalam daftar requireAuth ---
+export default withAuth(mainMiddleware, [
+  "/profile", 
+  "/produk", 
+  "/about", 
+  "/admin" // <--- WAJIB DITAMBAHKAN
+]);
 
+// --- PERBAIKAN: Tambahkan "/admin" ke dalam config matcher ---
 export const config = {
-  matcher: ["/profile", "/produk", "/about"],
+  matcher: [
+    "/profile", 
+    "/produk", 
+    "/about", 
+    "/admin" // <--- WAJIB DITAMBAHKAN
+  ],
 };
