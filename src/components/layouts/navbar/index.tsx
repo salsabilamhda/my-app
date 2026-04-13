@@ -1,4 +1,5 @@
-import Image from "next/image"; // Import komponen Image
+import Image from "next/image"; 
+import Script from 'next/script'; 
 import styles from "./navbar.module.css";
 import { signIn, signOut, useSession } from "next-auth/react";
 
@@ -7,7 +8,11 @@ const Navbar = () => {
 
   return (
     <div className={styles.navbar}>
-      <div className={styles.navbar__brand}>MyApp</div>
+      <div className={styles.navbar__brand} id="title"></div>
+      
+      <Script id="title-script" strategy='lazyOnload'>
+        {`document.getElementById('title').innerHTML = 'MyApp';`}
+      </Script>
 
       <div className={styles.navbar__right}>
         {data ? (
@@ -15,17 +20,16 @@ const Navbar = () => {
             <div className={styles.navbar__user}>
               Welcome, {data.user?.fullname}
               
-              {/* --- MODIFIKASI: Menampilkan foto profil Google --- */}
               {data.user?.image && (
                 <Image
-                  width={32}
-                  height={32}
+                  /* MODIFIKASI UKURAN SESUAI KOTAK MERAH DI GAMBAR */
+                  width={50}
+                  height={50}
                   src={data.user.image}
-                  alt={data.user.fullname}
+                  alt={data.user.fullname || "User Image"}
                   className={styles.navbar__user__image}
                 />
               )}
-              {/* -------------------------------------------------- */}
             </div>
             
             <button
