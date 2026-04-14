@@ -19,28 +19,28 @@ const TampilanProduk = ({ products }: { products: ProductType[] }) => {
       <div className={styles.produk__content}>
         {products.length > 0 ? (
           <>
-            {products.map((product: ProductType) => (
+            {products.map((products: ProductType) => (
               <Link 
-                href={`/produk/${product.id}`} 
-                key={product.id} 
+                href={`/produk/${products.id}`} 
+                key={products.id} 
                 className={styles.produk__content__item}
               >
                 <div className={styles.produk__content__item__image}>
                   <Image 
-                    src={product.image} 
-                    alt={product.name} 
+                    src={products.image} 
+                    alt={products.name} 
                     width={200} 
                     height={200} 
                   />
                 </div>
                 <h4 className={styles.produk__content__item__name}>
-                  {product.name}
+                  {products.name}
                 </h4>
                 <p className={styles.produk__content__item__category}>
-                  {product.category}
+                  {products.category}
                 </p>
                 <p className={styles.produk__content__item__price}>
-                  Rp {product.price.toLocaleString("id-ID")}
+                  Rp {products.price.toLocaleString("id-ID")}
                 </p>
               </Link>
             ))}

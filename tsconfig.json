@@ -19,6 +19,11 @@
     "isolatedModules": true,
     "jsx": "react-jsx",
     "incremental": true,
+    "types": [
+      "node",
+      "jest",
+      "@testing-library/jest-dom"
+    ],
     "paths": {
       "@/*": [
         "./src/*"
@@ -28,8 +33,9 @@
   "include": [
     "next-env.d.ts",
     "**/*.ts",
-    "**/*.tsx"
-, "src/pages/shop/[[...slug]].tsx"  ],
+    "**/*.tsx",
+    "src/pages/shop/[[...slug]].tsx"
+  ],
   "exclude": [
     "node_modules"
   ]

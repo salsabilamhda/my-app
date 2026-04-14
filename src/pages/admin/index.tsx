@@ -2,7 +2,7 @@ const HalamanAdmin = () => {
   return (
     <div>
       <div className="admin">
-        <h1>Halaman Admin</h1>
+        <h1 data-testid="admin-title">Halaman Admin</h1>
         <p>
           Selamat datang di halaman admin! Anda memiliki akses penuh ke semua
           fitur dan data di aplikasi ini. Di sini, Anda dapat mengelola

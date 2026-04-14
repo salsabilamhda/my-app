@@ -1,10 +1,9 @@
-import AboutView from "@/views/about";
-
-export default function AboutPage() {
+const AboutPage = () => {
   return (
-    <>
-      <title>About | Salsabila Mahda</title>
-      <AboutView />
-    </>
+    <div>
+      <h1 data-testid="title">About Page</h1>
+    </div>
   );
-}
+};
+
+export default AboutPage;
