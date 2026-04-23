@@ -66,42 +66,44 @@ const Tampilanlogin = () => {
             />
           </div>
 
+          {/* Tombol Login Utama */}
           <button 
             type="submit" 
             className={style.login__form__item__button}
             disabled={isLoading}
           >
-            {isLoading ? "Loading..." : "login"}
+            {isLoading ? "Loading..." : "Login"}
           </button>
 
-          <hr className={style.hr} /> {/* Garis pemisah opsional */}
+          <br />
+          <br />
 
-          {/* --- TOMBOL GOOGLE --- */}
+          {/* Tombol Sign in with Google */}
           <button
             type="button" 
             onClick={() => signIn("google", { callbackUrl, redirect: false })}
             className={style.login__form__item__button}
             disabled={isLoading}
           >
-            {isLoading ? "Loading..." : "sign in with google"}
+            Sign in with Google
           </button>
 
-          {/* --- TOMBOL GITHUB (TAMBAHAN TUGAS MANDIRI) --- */}
+          {/* --- TOMBOL GITHUB (Opsional) --- */}
           <button
             type="button" 
             onClick={() => signIn("github", { callbackUrl, redirect: false })}
             className={style.login__form__item__button}
-            style={{ marginTop: "10px", backgroundColor: "#333" }} // Warna gelap khas GitHub
+            style={{ marginTop: "10px", backgroundColor: "#333" }} 
             disabled={isLoading}
           >
-            {isLoading ? "Loading..." : "sign in with github"}
+            Sign in with GitHub
           </button>
 
         </form>
 
         <br />
         <p className={style.login_form__item_text}>
-          tidak punya {""} akun? {" "}
+          tidak punya akun? {" "}
           <Link href="/auth/register">Ke Halaman Register</Link>
         </p>
       </div>
