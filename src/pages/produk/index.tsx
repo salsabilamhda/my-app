@@ -6,7 +6,7 @@ import fetcher from "../../utils/swr/fetcher";
 
 // const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
-const kategori = () => {
+const Kategori = () => {
   // const [isLogin, setIsLogin] = useState(true);
   const { push } = useRouter();
   const [products, setProducts] = useState([]);
@@ -22,4 +22,4 @@ const kategori = () => {
   );
 };
 
-export default kategori;
+export default Kategori;

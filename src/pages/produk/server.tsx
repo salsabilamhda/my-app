@@ -1,7 +1,7 @@
 import TampilanProduk from "@/views/produk";
 import { ProductType } from "../../types/Product.type";
 
-const halamanProdukServer = (props: { products: ProductType[] }) => {
+const HalamanProdukServer = (props: { products: ProductType[] }) => {
   const { products } = props;
   return (
     <div>
@@ -13,7 +13,7 @@ const halamanProdukServer = (props: { products: ProductType[] }) => {
   );
 };
 
-export default halamanProdukServer;
+export default HalamanProdukServer;
 
 // Fungsi getServerSideProps akan dipanggil setiap kali halaman ini diakses, 
 // dan akan mengambil data produk dari API sebelum merender halaman.

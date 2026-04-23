@@ -1,6 +1,6 @@
 import TampilanLogin from "@/views/auth/login";
 
-const halamanLogin = () => {
+const HalamanLogin = () => {
   return (
     <>
       <TampilanLogin />
@@ -8,4 +8,4 @@ const halamanLogin = () => {
   );
 };
 
-export default halamanLogin;
+export default HalamanLogin;
